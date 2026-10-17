@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * API tối thiểu để kiểm tra đường đi tới Anthropic API. Các tính năng (nhật ký yếu tố kích hoạt,
@@ -40,11 +41,17 @@ public class AssistantController {
 
 	@PostMapping("/chat")
 	public ChatResponse chat(@Valid @RequestBody ChatRequest request) {
-		String answer = assistantChatClient.prompt()
+		var response = assistantChatClient.prompt()
 				.user(request.message())
 				.advisors(a -> a.param(ChatMemory.CONVERSATION_ID, request.conversationId()))
 				.call()
-				.content();
+				.chatResponse();
+		// Claude 5 có thể trả nhiều khối nội dung, khối đầu đôi khi trống; ghép mọi khối có chữ thay vì chỉ lấy khối đầu
+		String answer = response == null ? "" : response.getResults().stream()
+				.map(g -> g.getOutput().getText())
+				.filter(t -> t != null && !t.isBlank())
+				.collect(Collectors.joining("\n"))
+				.trim();
 		return new ChatResponse(request.conversationId(), answer);
 	}
 

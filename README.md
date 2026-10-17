@@ -55,7 +55,7 @@ curl -X POST http://localhost:8081/api/assistant/chat -H "Content-Type: applicat
 
 ## CI/CD
 
-`.github/workflows/ci-cd.yml`: Maven build + test (JDK 21), OWASP Dependency-Check (báo cáo, chưa chặn), và khi push lên `main`: build image, quét CVE bằng Trivy (chặn CRITICAL/HIGH đã có bản vá), đẩy lên Docker Hub `<DOCKERHUB_USERNAME>/ai-assistant-service` với tag `latest` và mã commit. Cần hai secret `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
+`.github/workflows/ci-cd.yml`: Maven build + test (JDK 21), và khi push lên `main`: build image, quét CVE bằng Trivy cho cả hệ điều hành lẫn thư viện Java trong jar (chặn CRITICAL/HIGH đã có bản vá), đẩy lên Docker Hub `<DOCKERHUB_USERNAME>/ai-assistant-service` với tag `latest` và mã commit. Cần hai secret `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
 Dockerfile build 2 giai đoạn, chép jar theo layer (dependencies tách khỏi application) nên lần build sau chỉ đổi vài MB; runtime là JRE 21, chạy user không phải root, healthcheck `/actuator/health/liveness`.
 

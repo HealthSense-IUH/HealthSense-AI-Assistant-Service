@@ -1,0 +1,16 @@
+# Không đưa vào image
+target/
+.git/
+.github/
+.gitignore
+.gitattributes
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/
+*.iml
+*.md
+docker-compose*.yml
+Dockerfile
+.mvn/wrapper/maven-wrapper.jar

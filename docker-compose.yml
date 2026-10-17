@@ -1,0 +1,47 @@
+services:
+  ai-assistant-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-healthsense}/${IMAGE_NAME:-ai-assistant-service}:${IMAGE_TAG:-latest}
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    environment:
+      # Trong compose dùng application.properties (đọc biến môi trường), không dùng profile dev vì dev trỏ Postgres chung
+      - SPRING_PROFILES_ACTIVE=
+      # Ghi đè để trỏ vào Postgres dev trong compose; trên Dokploy bỏ các dòng này và dùng .env trỏ về Postgres của Core Service
+      - DB_HOST=assistant-db
+      - DB_PORT=5432
+      - DB_NAME=healthsense
+      - RABBITMQ_HEALTH_ENABLED=false
+    depends_on:
+      assistant-db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8081/actuator/health/liveness"]
+      interval: 30s
+      timeout: 5s
+      start_period: 40s
+      retries: 3
+
+  # Postgres cho phát triển tại chỗ, tự tạo schema "assistant" lần đầu
+  assistant-db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB=healthsense
+      - POSTGRES_USER=${DB_USERNAME:-healthsense}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-healthsense}
+    volumes:
+      - assistant-db-data:/var/lib/postgresql/data
+      - ./docker/init-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-healthsense} -d healthsense"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  assistant-db-data:

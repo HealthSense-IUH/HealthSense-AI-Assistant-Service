@@ -1,0 +1,82 @@
+### Maven / build ###
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+*.class
+*.jar
+*.war
+*.ear
+!.mvn/wrapper/*.jar
+
+### Môi trường, bí mật ###
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.jks
+*.key
+# Giống Core Service: file cấu hình dev/prod/local chứa mật khẩu, chỉ nằm trên máy, không commit
+**/application-dev.properties
+**/application-prod.properties
+**/application-local.properties
+**/application-local.yaml
+**/application-local.yml
+**/application-secret*.properties
+
+### Log, dữ liệu tạm ###
+*.log
+logs/
+*.log.*
+hs_err_pid*
+replay_pid*
+*.tmp
+*.bak
+dump.rdb
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+### Eclipse / STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+!.vscode/extensions.json
+
+### Hệ điều hành ###
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+
+### Docker / dữ liệu dev ###
+docker/data/
+*.override.yml
+docker-compose.override.yml
+
+### Khác ###
+HELP.md
+node_modules/

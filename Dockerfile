@@ -16,13 +16,12 @@ RUN mvn -B -q -DskipTests package \
 # ========================
 # Stage 2: runtime chỉ có JRE, chạy non-root
 # ========================
-FROM eclipse-temurin:21-jre
+# Alpine giống base của Core Service (Jib): nhỏ hơn và không mang theo binary Go (pebble) có CVE như bản Ubuntu
+FROM eclipse-temurin:21-jre-alpine
 
 # curl cho HEALTHCHECK; user non-root
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/* \
-    && groupadd -r appuser && useradd -r -g appuser appuser
+RUN apk add --no-cache curl \
+    && addgroup -S appuser && adduser -S appuser -G appuser
 
 WORKDIR /app
 

@@ -26,6 +26,9 @@ jobs:
         java-version: '21'
         cache: maven
 
+    - name: Make maven wrapper executable
+      run: chmod +x mvnw
+
     - name: Build and run tests
       run: ./mvnw -B --no-transfer-progress verify
 
@@ -51,6 +54,9 @@ jobs:
         distribution: temurin
         java-version: '21'
         cache: maven
+
+    - name: Make maven wrapper executable
+      run: chmod +x mvnw
 
     # Báo cáo CVE của thư viện Java; chưa chặn merge (continue-on-error) cho tới khi dọn xong lần đầu
     - name: OWASP Dependency-Check
